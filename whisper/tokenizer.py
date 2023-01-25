@@ -10,6 +10,8 @@ from transformers import GPT2TokenizerFast
 TIME_LIST = ["begintimestamp"] # <|begintimestamp|> , '<|0.02|>' . . '<|29.98|>'
 for i in range(0,1501):
     TIME_LIST.append(str(round(i*(20/1000),2)))
+    
+DIALECTS = ['OMA','QAT','SUD']
 
 
 LANGUAGES = {  # should add the speacial tokens for arabic here
@@ -291,6 +293,7 @@ def build_tokenizer(name: str = "gpt2"):
         "<|nospeech|>",
         "<|notimestamps|>",
         *[f"<|{time_slit}|>" for time_slit in TIME_LIST],
+        *[f"<|{dialect}|>" for dialect in DIALECTS],
     ]
                                                 #Do len(tokenizer.get_vocab())
     tokenizer.add_special_tokens(dict(additional_special_tokens=specials))
