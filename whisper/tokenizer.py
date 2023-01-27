@@ -225,7 +225,7 @@ class Tokenizer:
             self.tokenizer.additional_special_tokens,
             self.tokenizer.additional_special_tokens_ids,
         ):
-            if token.strip("<|>") in LANGUAGES:
+            if token.strip("<|>") in LANGUAGES or DIALECTS: # modified function to include dailects as well 
                 result.append(token_id)
         return tuple(result)
 
