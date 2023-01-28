@@ -71,7 +71,7 @@ def available_models() -> List[str]:
     return list(_MODELS.keys())
 
 
-def load_model(name: str, device: Optional[Union[str, torch.device]] = None, download_root: str = None, in_memory: bool = False) -> Whisper:
+def load_model(name: str, device: Optional[Union[str, torch.device]] = None, download_root: str = None, in_memory: bool = False, custom: bool = False, num_dialects = 3) -> Whisper:
     """
     Load a Whisper ASR model
 
@@ -117,12 +117,23 @@ def load_model(name: str, device: Optional[Union[str, torch.device]] = None, dow
         checkpoint = torch.load(fp, map_location=device)
     del checkpoint_file
 
-    dims = ModelDimensions(**checkpoint["dims"])
-    model = Whisper(dims)
-    model.load_state_dict(checkpoint["model_state_dict"])  
+    
+    
+    if custom: 
+        print("Using number of dialects :",num_dialects)
+        checkpoint['dims']['n_vocab'] = checkpoint['dims']['n_vocab'] + num_dialects
+        dims = ModelDimensions(**checkpoint["dims"])
+        model = Whisper(dims)
+        return model.to(device) , checkpoint
+        
+    else:
+        dims = ModelDimensions(**checkpoint["dims"])
+        model = Whisper(dims)
+        model.load_state_dict(checkpoint["model_state_dict"]) 
+        return model.to(device) 
     
     # when you are creating a new model now (and you want to use the old models weights on some point) we can use
     # model.load_state_dict with the strict parameter set to false. For more infromation go to the
     # https://pytorch.org/tutorials/beginner/saving_loading_models.html#warmstarting-model-using-parameters-from-a-different-model
     
-    return model.to(device)
+    
