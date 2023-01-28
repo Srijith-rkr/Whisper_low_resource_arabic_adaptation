@@ -14,7 +14,7 @@ for i in range(1,1501): # you start form 1 because <|begintimestamp|> and <0.0> 
 DIALECTS = ['OMA','QAT','SUD']
 
 
-LANGUAGES = {  # should add the speacial tokens for arabic here
+LANGUAGES = { 
     "en": "english",
     "zh": "chinese",
     "de": "german",
@@ -225,7 +225,7 @@ class Tokenizer:
             self.tokenizer.additional_special_tokens,
             self.tokenizer.additional_special_tokens_ids,
         ):
-            if token.strip("<|>") in LANGUAGES or DIALECTS: # modified function to include dailects as well 
+            if (token.strip("<|>") in LANGUAGES) or (token.strip("<|>") in DIALECTS) :#:or DIALECTS: # modified function to include dailects as well 
                 result.append(token_id)
         return tuple(result)
 
