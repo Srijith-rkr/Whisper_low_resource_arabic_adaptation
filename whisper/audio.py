@@ -54,8 +54,9 @@ def pad_or_trim(array, length: int = N_SAMPLES, *, axis: int = -1):
     Pad or trim the audio array to N_SAMPLES, as expected by the encoder.
     """
     if torch.is_tensor(array):
-        if array.shape[axis] > length:   # if more than 30s 
-            array = array.index_select(dim=axis, index=torch.arange(length, device=array.device))
+        if array.shape[axis] > length:   # if more than 30s   \
+            offset = torch.randint(high =(array.shape[-1] - length + 1),size =  ((1,))  )         
+            array = array.index_select(dim=axis, index=torch.arange(offset[0] , (offset[0] + length), device=array.device))
 
         if array.shape[axis] < length:
             pad_widths = [(0, 0)] * array.ndim
@@ -63,7 +64,8 @@ def pad_or_trim(array, length: int = N_SAMPLES, *, axis: int = -1):
             array = F.pad(array, [pad for sizes in pad_widths[::-1] for pad in sizes])
     else:
         if array.shape[axis] > length:
-            array = array.take(indices=range(length), axis=axis)
+            offset = np.random.randint(0,  (array.shape[-1] - length + 1)    ) # randint is exclusive of the second parameter (just like range)
+            array = array.take(indices=range(offset , (offset + length)  ), axis=axis)
 
         if array.shape[axis] < length:
             pad_widths = [(0, 0)] * array.ndim
