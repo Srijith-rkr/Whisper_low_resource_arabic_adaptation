@@ -43,8 +43,10 @@ def load_audio(file: str, sr: int = SAMPLE_RATE):
             .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
             .run(cmd=["ffmpeg", "-nostdin"], capture_stdout=True, capture_stderr=True)
         )
-    except ffmpeg.Error as e:
-        raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+    except ffmpeg.Error as e: #ffmpeg.Error as e:
+        #raise RuntimeError(f"Failed to load audio: {e.stderr.decode()}") from e
+        print("Failed to load audio in file ",file," because of ",e.stderr.decode()," Hence replacing the file with 0s")
+        return np.zeros((480000,)).astype(np.float32)
 
     return np.frombuffer(out, np.int16).flatten().astype(np.float32) / 32768.0
 
