@@ -39,7 +39,7 @@ def load_audio(file: str, sr: int = SAMPLE_RATE):
         # This launches a subprocess to decode audio while down-mixing and resampling as necessary.
         # Requires the ffmpeg CLI and `ffmpeg-python` package to be installed.
         out, _ = (
-            ffmpeg.input(file, threads=0)
+            ffmpeg.input(file, threads=1)# was threads= 0 [0:optimal;1-n : n threads]
             .output("-", format="s16le", acodec="pcm_s16le", ac=1, ar=sr)
             .run(cmd=["ffmpeg", "-nostdin"], capture_stdout=True, capture_stderr=True)
         )
